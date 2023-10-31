@@ -1,3 +1,4 @@
+import 'package:doni_pizza_admin/presentation/ui/admin_page/tab_box/tab_box_admin.dart';
 import 'package:flutter/material.dart';
 
 import 'detail_screen.dart';
@@ -27,6 +28,66 @@ class _HomeScreenState extends State<HomeScreen> {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    clipBehavior: Clip.antiAliasWithSaveLayer,
+                    shape: ShapeBorder.lerp(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                      ),
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(16),
+                        ),
+                      ),
+                      0.5,
+                    ),
+                    title: Text(
+                      'Log Out',
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontFamily: 'Sora',
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    content: Text('Admin profiliga  o\'tmoqchimisiz?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Yo\'q',
+                          style: TextStyle(color: Colors.black, fontFamily: 'Sora'),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>TabBoxAdmin()));
+                        },
+                        child: Text(
+                          'Ha',
+                          style: TextStyle(color: Colors.red, fontFamily: 'Sora'),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: Icon(Icons.compare_arrows),
+            color: Colors.red,
+          )
+        ]
       ),
       body: Column(
         children: [

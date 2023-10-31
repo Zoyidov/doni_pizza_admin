@@ -6,8 +6,8 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.3.0-27.0.dev <4.0.0'
-#  sdk: ">=3.1.5 <4.0.0"
+#  sdk: '>=3.3.0-27.0.dev <4.0.0'
+  sdk: ">=3.1.5 <4.0.0"
 
 dependencies:
   flutter:
@@ -30,9 +30,14 @@ dependencies:
   carousel_slider: ^4.2.1
   path_provider: ^2.1.1
   url_launcher: ^6.1.6
+  stylish_bottom_bar: ^1.0.3
+  equatable: ^2.0.3
 
   badges: ^3.1.2
   google_sign_in: ^6.1.5
+  firebase_core: ^2.21.0
+  cloud_firestore: ^4.12.2
+  firebase_auth: ^4.12.1
 
 dev_dependencies:
   flutter_test:
