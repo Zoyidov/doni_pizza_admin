@@ -33,8 +33,6 @@ class _DeliveredScreenState extends State<DeliveredScreen> {
             title: Text('Order #12345'),
             subtitle: Text('Delivery Address: 123 Main St, City, Country'),
             trailing: Text('Status: Delivered'),
-            onTap: () {
-            },
           ),
           ListTile(
             leading: Icon(Icons.check_circle,color: Colors.green,),

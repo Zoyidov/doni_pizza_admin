@@ -5,6 +5,7 @@ class AppImages{
 
   //svg
   static const String google = 'assets/svg/google.svg';
+  static const String emptyCart = 'assets/svg/empty.svg';
 
 
 

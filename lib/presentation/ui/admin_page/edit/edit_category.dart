@@ -1,25 +1,37 @@
+import 'dart:io';
+
 import 'package:doni_pizza_admin/presentation/ui/widgets/global_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+
+import '../../widgets/dialog_gallery_camera.dart';
 
 class EditCategory extends StatefulWidget {
-  const EditCategory({super.key});
+  const EditCategory({super.key, required this.category});
+  final String category;
 
   @override
   _EditCategoryState createState() => _EditCategoryState();
 }
 
 class _EditCategoryState extends State<EditCategory> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _priceController = TextEditingController();
+  TextEditingController categoryController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    categoryController = TextEditingController(text: widget.category);
+  }
 
   @override
   void dispose() {
-    _nameController.dispose();
-    _descriptionController.dispose();
-    _priceController.dispose();
+    categoryController.dispose();
     super.dispose();
   }
+
+  String? selectedImagePath;
+
 
   @override
   Widget build(BuildContext context) {
@@ -39,21 +51,62 @@ class _EditCategoryState extends State<EditCategory> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
-            children: <Widget>[
+            children: [
+              ZoomTapAnimation(
+                onTap: () {
+                  showCameraAndGalleryDialog(context, (imagePath) {
+                    if (imagePath != null) {
+                      setState(() {
+                        selectedImagePath = imagePath;
+                      });
+                    }
+                  });
+                },
+                child: Container(
+                  height: MediaQuery.of(context).size.height/4.2,
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.0),
+                    color: selectedImagePath == null
+                        ? Colors.grey.shade400
+                        : Colors.black,
+                  ),
+                  child: selectedImagePath != null
+                      ? ClipRRect(
+                    borderRadius: BorderRadius.circular(16.0),
+                    child: Image.file(
+                      File(selectedImagePath!),
+                      fit: BoxFit.scaleDown,
+                    ),
+                  )
+                      : Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 80.0),
+                      child: Icon(
+                        CupertinoIcons.camera,
+                        size: 30,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 20.0),
               GlobalTextField(
+                controller: categoryController,
                 hintText: 'Categoriyaning yangi nomi',
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
                 caption: '',
               ),
               SizedBox(
-                height: 10.0,
+                height: 20.0,
               ),
-              SizedBox(height: 100,),
               OutlinedButton(
                 style: OutlinedButton.styleFrom(
                     shape: StadiumBorder(),

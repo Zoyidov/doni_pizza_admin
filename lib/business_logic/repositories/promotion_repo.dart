@@ -5,7 +5,7 @@ class PromotionRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collectionName = 'promotions';
 
-  // Add a new promotion to Firestore.
+
   Future<void> addPromotion(Promotion promotion) async {
     try {
       await _firestore.collection(_collectionName).add({
@@ -19,7 +19,7 @@ class PromotionRepository {
     }
   }
 
-  // Retrieve a list of all promotions from Firestore.
+
   Future<List<Promotion>> getAllPromotions() async {
     try {
       final querySnapshot = await _firestore.collection(_collectionName).get();

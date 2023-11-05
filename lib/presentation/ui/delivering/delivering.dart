@@ -42,8 +42,6 @@ class _DeliveringScreenState extends State<DeliveringScreen> {
             title: Text('Order #67890'),
             subtitle: Text('Delivery Address: 456 Elm St, City, Country'),
             trailing: IconButton(onPressed: (){}, icon: Icon(CupertinoIcons.location_fill,color: Colors.teal,size: 35,)),
-            onTap: () {
-            },
           ),
         ],
       ),

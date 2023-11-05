@@ -34,8 +34,6 @@ class _PreparingScreenState extends State<PreparingScreen> {
             title: Text('Abdukarim', style: TextStyle(fontWeight: FontWeight.bold)),
             subtitle: Text('Toshkent', style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: IconButton.outlined(onPressed: (){}, icon: Icon(Icons.delivery_dining,color: Colors.teal,size: 35,)),
-            onTap: () {
-            },
           ),
           ListTile(
             leading:  CupertinoActivityIndicator(color: Colors.black,),

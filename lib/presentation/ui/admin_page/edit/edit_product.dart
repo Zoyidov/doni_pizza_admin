@@ -39,7 +39,7 @@ class _EditProductState extends State<EditProduct> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
