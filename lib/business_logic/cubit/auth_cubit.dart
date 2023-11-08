@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 enum AuthState { unauthenticated, authenticated }
@@ -12,7 +13,9 @@ class AuthCubit extends Cubit<AuthState> {
 
   void checkAuthState() {
     _firebaseAuth.authStateChanges().listen((User? user) {
-      print('State changed: $user : Cubit');
+      if (kDebugMode) {
+        print('State changed: $user : Cubit');
+      }
       if (user == null) {
         emit(AuthState.unauthenticated);
       } else {

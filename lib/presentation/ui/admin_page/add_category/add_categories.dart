@@ -7,17 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
-import '../../../../business_logic/cubit/category_cubit/category_cubit.dart';
-import '../../widgets/dialog_gallery_camera.dart';
+import 'package:doni_pizza_admin/business_logic/cubit/category_cubit/category_cubit.dart';
+import 'package:doni_pizza_admin/presentation/ui/widgets/dialog_gallery_camera.dart';
 
 class AddCategory extends StatefulWidget {
   const AddCategory({super.key});
 
   @override
-  _AddCategoryState createState() => _AddCategoryState();
+  AddCategoryState createState() => AddCategoryState();
 }
 
-class _AddCategoryState extends State<AddCategory> {
+class AddCategoryState extends State<AddCategory> {
   final TextEditingController categoryController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -29,32 +29,28 @@ class _AddCategoryState extends State<AddCategory> {
 
   String? selectedImagePath;
 
-
   @override
   Widget build(BuildContext context) {
-    final newCategory = CategoryModel(
-      name: categoryController.text,
-      imageUrl: 'https://www.befunky.com/images/prismic/82e0e255-17f9-41e0-85f1-210163b0ea34_hero-blur-image-3.jpg?auto=avif,webp&format=jpg&width=896',
-    );
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'Qo\'shish',
           style: TextStyle(
-              fontFamily: 'Sora',
-              fontSize: 25,
-              fontWeight: FontWeight.bold,
-              color: Colors.black),
+            fontFamily: 'Sora',
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16.0),
         child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
             child: Column(
@@ -70,7 +66,7 @@ class _AddCategoryState extends State<AddCategory> {
                     });
                   },
                   child: Container(
-                    height: MediaQuery.of(context).size.height/4.2,
+                    height: MediaQuery.of(context).size.height / 4.2,
                     width: MediaQuery.of(context).size.width,
                     padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
@@ -87,9 +83,9 @@ class _AddCategoryState extends State<AddCategory> {
                         fit: BoxFit.scaleDown,
                       ),
                     )
-                        : Center(
+                        : const Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 80.0),
+                        padding: EdgeInsets.symmetric(vertical: 80.0),
                         child: Icon(
                           CupertinoIcons.camera,
                           size: 30,
@@ -99,7 +95,7 @@ class _AddCategoryState extends State<AddCategory> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20.0),
+                const SizedBox(height: 20.0),
                 GlobalTextField(
                   controller: categoryController,
                   hintText: 'Categoriyaning nomi',
@@ -110,25 +106,31 @@ class _AddCategoryState extends State<AddCategory> {
                     if (value == null || value.isEmpty) {
                       return 'Categoriyaning nomini kiriting';
                     }
+                    return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    shape: StadiumBorder(),
-                    side: BorderSide(
+                    shape: const StadiumBorder(),
+                    side: const BorderSide(
                       width: 2,
                     ),
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
+                      final newCategory = CategoryModel(
+                        name: categoryController.text,
+                        imageUrl: selectedImagePath ?? '',
+                      );
+
                       BlocProvider.of<CategoryCubit>(context).addCategory(newCategory);
                       Navigator.pop(context);
                     }
                   },
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'Qo\'shish',
                       style: TextStyle(
@@ -140,7 +142,7 @@ class _AddCategoryState extends State<AddCategory> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 50.0,
                 )
               ],

@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stylish_bottom_bar/model/bar_items.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-import '../../../../business_logic/cubit/tab_cubit.dart';
+import 'package:doni_pizza_admin/business_logic/cubit/tab_cubit.dart';
 
 
 class TabBoxAdmin extends StatefulWidget {
@@ -44,8 +44,6 @@ class _TabBoxAdminState extends State<TabBoxAdmin> {
       ),
       bottomNavigationBar: StylishBottomBar(
         option: BubbleBarOptions(
-          barStyle: BubbleBarStyle.horizotnal,
-          bubbleFillStyle: BubbleFillStyle.fill,
           opacity: 0.5,
         ),
         items: [

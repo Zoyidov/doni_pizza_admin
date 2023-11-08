@@ -14,7 +14,7 @@ class AuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               image: DecorationImage(
                   image: AssetImage(
                     AppImages.log,
@@ -25,7 +25,7 @@ class AuthScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     'Doni Pizza Admin',
                     style: TextStyle(
                       color: Colors.white,
@@ -39,9 +39,9 @@ class AuthScreen extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         style: OutlinedButton.styleFrom(
-                          padding: EdgeInsets.all(12.0),
-                          shape: StadiumBorder(),
-                          side: BorderSide(
+                          padding: const EdgeInsets.all(12.0),
+                          shape: const StadiumBorder(),
+                          side: const BorderSide(
                             width: 2,
                             color: Colors.white
                           )
@@ -49,7 +49,7 @@ class AuthScreen extends StatelessWidget {
                         onPressed: () {
                           context.read<AuthBloc>().add(GoogleLoginEvent());
                         },
-                        label: Text(
+                        label: const Text(
                           ' Login',
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Sora', fontSize: 20),
                         ),

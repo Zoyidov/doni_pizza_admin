@@ -1,5 +1,7 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:doni_pizza_admin/business_logic/model/food_model.dart';
+import 'package:flutter/foundation.dart';
 
 class FoodItemRepository {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -45,13 +47,17 @@ class FoodItemRepository {
   /// Searches for food items based on a [query] string, filtering by name.
   Future<List<FoodItem>> searchFoodItems(String query) async {
     try {
-      print('searching for $query');
+      if (kDebugMode) {
+        print('searching for $query');
+      }
       final querySnapshot = await _firestore
           .collection(_foodItemsCollection)
           .where('name', isGreaterThanOrEqualTo: query)
-          .where('name', isLessThan: query + "\uf8ff")
+          .where('name', isLessThan: "$query\uf8ff")
           .get();
-      print(querySnapshot.docs.length);
+      if (kDebugMode) {
+        print(querySnapshot.docs.length);
+      }
       if (querySnapshot.docs.isNotEmpty) {
         return querySnapshot.docs.map((doc) {
           return FoodItem.fromJson(doc.data());
@@ -67,7 +73,7 @@ class FoodItemRepository {
   /// Adds a new food item to the Firestore collection.
   Future<void> addFoodItem(FoodItem foodItem) async {
     try {
-      await _firestore.collection(_foodItemsCollection).add(foodItem.toJson());
+      await _firestore.collection(_foodItemsCollection).doc(foodItem.id).set(foodItem.toJson());
     } catch (e) {
       throw Exception('Error adding food item: $e');
     }

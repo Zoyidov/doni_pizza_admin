@@ -1,5 +1,6 @@
 import 'package:doni_pizza_admin/business_logic/model/food_model.dart';
 import 'package:doni_pizza_admin/business_logic/model/order_item.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 
@@ -134,7 +135,9 @@ class FoodBloc extends Bloc<FoodEvent, FoodState> {
   void _handleDeleteFoods(DeleteFoods event, Emitter<FoodState> emit) {
     try {
       foodBox.clear();
-      print('ok');
+      if (kDebugMode) {
+        print('ok');
+      }
       emit(FoodLoadedState(foodBox.values.toList()));
     } catch (e) {
       emit(FoodErrorState('Failed to delete foods: $e'));

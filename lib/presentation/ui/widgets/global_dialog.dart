@@ -29,7 +29,7 @@ class GlobalDialog {
             ),
             0.5,
           ),
-          title: Text(title,style: TextStyle(color: Colors.black,fontFamily: 'Sora',fontWeight: FontWeight.bold),),
+          title: Text(title,style: const TextStyle(color: Colors.black,fontFamily: 'Sora',fontWeight: FontWeight.bold),),
           content: Text(message),
           actions: <Widget>[
             TextButton(

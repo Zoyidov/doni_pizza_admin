@@ -1,10 +1,13 @@
-import 'dart:async';
+import 'dart:io';
 
-import 'package:doni_pizza_admin/business_logic/model/food_model.dart';
-import 'package:doni_pizza_admin/business_logic/repositories/food_repo.dart';
-import 'package:doni_pizza_admin/presentation/utils/cache/cache_manager.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:doni_pizza_admin/presentation/utils/firebase_helper.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:doni_pizza_admin/presentation/utils/cache/cache_manager.dart';
+import 'package:doni_pizza_admin/business_logic/model/food_model.dart';
+import 'package:doni_pizza_admin/business_logic/repositories/food_repo.dart';
 
 part 'food_event.dart';
 
@@ -17,7 +20,13 @@ class FoodBlocRemote extends Bloc<FoodEvent, FoodStateRemote> {
   FoodBlocRemote(this.foodRepository) : super(FoodInitial()) {
     on<GetAll>(_fetchFoodItems);
     on<GetFoodsByCategory>(_fetchFoodItemsByCategory);
-    on<SearchFoodItem>(_searchFoodItems);
+    on<SearchFoodItem>(
+      _searchFoodItems,
+      transformer: restartable(),
+    );
+    on<CreateFoodItem>(_createFoodItem);
+    on<UpdateFoodItem>(_updateFoodItem);
+    on<DeleteFoodItem>(_deleteFoodItem);
   }
 
   _fetchFoodItems(GetAll event, Emitter<FoodStateRemote> emit) async {
@@ -59,7 +68,6 @@ class FoodBlocRemote extends Bloc<FoodEvent, FoodStateRemote> {
   }
 
   _searchFoodItems(SearchFoodItem event, Emitter<FoodStateRemote> emit) async {
-    print("searching for ${event.query}");
     emit(FetchFoodLoading());
     try {
       final cachedData = cacheManager.get('search_${event.query}'); // Check cache for data
@@ -75,6 +83,49 @@ class FoodBlocRemote extends Bloc<FoodEvent, FoodStateRemote> {
       cacheManager.add('search_${event.query}', foods);
     } catch (e) {
       emit(FetchFoodFailure('Failed to fetch food items: $e'));
+    }
+  }
+
+  _createFoodItem(CreateFoodItem event, Emitter<FoodStateRemote> emit) async {
+    // Handle creating a food item remotely
+    try {
+      final url = await TFirebaseHelper.uploadImage(
+          event.image, 'images/food/${event.image.uri.pathSegments.last}'); // Upload image
+
+      await foodRepository.addFoodItem(event.foodItem.copyWith(imageUrl: url));
+      final foods = await foodRepository.getAllFoodItems();
+      emit(FetchFoodSuccess(foods));
+    } catch (e) {
+      emit(FetchFoodFailure('Failed to create food item: $e'));
+    }
+  }
+
+  _updateFoodItem(UpdateFoodItem event, Emitter<FoodStateRemote> emit) async {
+    // Handle updating a food item remotely
+    try {
+      if (event.image != null) {
+        final url = await TFirebaseHelper.uploadImage(
+            event.image!, 'images/food/${event.image?.uri.pathSegments.last}'); // Upload image
+        await foodRepository.updateFoodItem(
+            event.foodItemId, event.updatedFoodItem.copyWith(imageUrl: url));
+      } else {
+        await foodRepository.updateFoodItem(event.foodItemId, event.updatedFoodItem);
+      }
+      final foods = await foodRepository.getAllFoodItems();
+      emit(FetchFoodSuccess(foods));
+    } catch (e) {
+      emit(FetchFoodFailure('Failed to update food item: $e'));
+    }
+  }
+
+  _deleteFoodItem(DeleteFoodItem event, Emitter<FoodStateRemote> emit) async {
+    // Handle deleting a food item remotely
+    try {
+      await foodRepository.deleteFoodItem(event.foodItemId);
+      final foods = await foodRepository.getAllFoodItems();
+      emit(FetchFoodSuccess(foods));
+    } catch (e) {
+      emit(FetchFoodFailure('Failed to delete food item: $e'));
     }
   }
 }

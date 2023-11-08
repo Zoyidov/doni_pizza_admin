@@ -14,6 +14,14 @@ class OrderRepository {
     }
   }
 
+  Stream<List<OrderModel>> getUsersOrders() {
+    return _firestore.collection('orders').orderBy('timestamp').snapshots().map((querySnapshot) {
+      return querySnapshot.docs.map((doc) {
+        return OrderModel.fromJson(doc.data());
+      }).toList();
+    });
+  }
+
   Stream<List<OrderModel>> getOrderStream(String userId) {
     return _firestore
         .collection('orders')
@@ -24,6 +32,14 @@ class OrderRepository {
         return OrderModel.fromJson(doc.data());
       }).toList();
     });
+  }
+
+  Future<List<OrderModel>> getOrdersForUser(String userId) async {
+    final orders = await _firestore.collection('orders').where('userId', isEqualTo: userId).get();
+
+    return orders.docs.map((doc) {
+      return OrderModel.fromJson(doc.data());
+    }).toList();
   }
 
   Future<void> updateOrder(OrderModel order) async {

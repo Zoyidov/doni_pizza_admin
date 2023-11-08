@@ -3,12 +3,14 @@
 import 'package:doni_pizza_admin/presentation/ui/delivered/delivered.dart';
 import 'package:doni_pizza_admin/presentation/ui/delivering/delivering.dart';
 import 'package:doni_pizza_admin/presentation/ui/preparing/preparing.dart';
-import 'package:dot_navigation_bar/dot_navigation_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stylish_bottom_bar/model/bar_items.dart';
+import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
 
-import '../../../business_logic/cubit/tab_cubit.dart';
-import '../home/home_screen.dart';
+import 'package:doni_pizza_admin/business_logic/cubit/tab_cubit.dart';
+import 'package:doni_pizza_admin/presentation/ui/home/home_screen.dart';
 
 class TabBox extends StatefulWidget {
   const TabBox({super.key});
@@ -40,40 +42,45 @@ class _TabBoxState extends State<TabBox> {
           );
         },
       ),
-      bottomNavigationBar: DotNavigationBar(
-        backgroundColor: Colors.grey[300],
+      bottomNavigationBar: StylishBottomBar(
+        option: BubbleBarOptions(
+          opacity: 0.5,
+        ),
+        items: [
+          BottomBarItem(
+            icon: const Icon(CupertinoIcons.doc_on_doc),
+            title: const Text('Buyurtmalar',style: TextStyle(color: Colors.white),),
+            backgroundColor: Colors.black,
+            selectedIcon: const Icon(CupertinoIcons.doc_on_doc_fill,color: Colors.white,),
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.watch_later_outlined),
+            title: const Text('Tayyorlanmoqda',style: TextStyle(color: Colors.white),),
+            backgroundColor: Colors.blue[900],
+            selectedIcon: const Icon(Icons.watch_later,color: Colors.white,),
+
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.directions_run),
+            title: const Text('Yetkazilmoqda',style: TextStyle(color: Colors.white),),
+            backgroundColor: Colors.amber[900],
+            selectedIcon: const Icon(Icons.directions_bike,color: Colors.white,),
+          ),
+          BottomBarItem(
+            icon: const Icon(Icons.dining_outlined),
+            title: const Text('Yetkazildi',style: TextStyle(color: Colors.white),),
+            backgroundColor: Colors.green[900],
+            selectedIcon: const Icon(Icons.dining,color: Colors.white,),
+          ),
+        ],
+        hasNotch: true,
         currentIndex: context
             .watch<TabCubit>()
             .state,
         onTap: context
             .read<TabCubit>()
             .changeTab,
-        unselectedItemColor: Colors.grey,
-        items: [
-          DotNavigationBarItem(
-            icon: const Icon(Icons.home),
-            selectedColor: Colors.black,
-          ),
-          DotNavigationBarItem(
-            icon: Badge(
-              label: Text('3'),
-              child: Icon(Icons.receipt_long_outlined),
-            ),
-            selectedColor: Colors.black,
-          ),
-          DotNavigationBarItem(
-            icon: Badge(
-              label: Text('1'),
-              child: Icon(Icons.delivery_dining),
-            ),
-            selectedColor: Colors.black,
-          ),
-          DotNavigationBarItem(
-            icon: const Icon(Icons.check_circle_outline_sharp),
-            selectedColor: Colors.black,
-          ),
-        ],
-      ),
+      )
     );
   }
 }

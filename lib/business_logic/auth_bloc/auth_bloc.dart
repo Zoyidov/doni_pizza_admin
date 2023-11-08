@@ -8,7 +8,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
 
   AuthBloc(this.authRepository) : super(const AuthState()) {
-    on<LoginEvent>((_signInWithEmailAndPassword));
+    on<LoginEvent>(_signInWithEmailAndPassword);
     on<GoogleLoginEvent>(_signInWithGoogle);
     on<RegisterEvent>(_registerWithEmailAndPassword);
   }
@@ -45,7 +45,5 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
-  void _signOut(Emitter<AuthState> emit) {
-    // Handle sign-out event here, similar to previous examples.
-  }
+
 }

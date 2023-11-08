@@ -1,7 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zoom_tap_animation/zoom_tap_animation.dart';
+import 'package:doni_pizza_admin/business_logic/order_bloc/order_remote_bloc.dart';
+import 'package:doni_pizza_admin/presentation/utils/enums.dart';
+import 'package:doni_pizza_admin/presentation/utils/helpers/time_heplers.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
+
+import 'package:doni_pizza_admin/presentation/ui/widgets/call.dart';
 
 class DeliveredScreen extends StatefulWidget {
-  const DeliveredScreen({Key? key}) : super(key: key);
+  const DeliveredScreen({super.key});
 
   @override
   State<DeliveredScreen> createState() => _DeliveredScreenState();
@@ -16,7 +25,7 @@ class _DeliveredScreenState extends State<DeliveredScreen> {
         elevation: 0,
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title: Text(
+        title: const Text(
           'Yetkazildi',
           style: TextStyle(
             color: Colors.black,
@@ -26,25 +35,179 @@ class _DeliveredScreenState extends State<DeliveredScreen> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          ListTile(
-            leading: Icon(Icons.check_circle,color: Colors.green,),
-            title: Text('Order #12345'),
-            subtitle: Text('Delivery Address: 123 Main St, City, Country'),
-            trailing: Text('Status: Delivered'),
-          ),
-          ListTile(
-            leading: Icon(Icons.check_circle,color: Colors.green,),
-            title: Text('Order #67890'),
-            subtitle: Text('Delivery Address: 456 Elm St, City, Country'),
-            trailing: Text('Status: Delivered'),
-            onTap: () {
-            },
-          ),
-        ],
+      body: BlocBuilder<OrderRemoteBloc, OrderRemoteState>(
+        builder: (context, state) {
+          if (state is OrdersFetchedState) {
+            final delivered =
+                state.orders.where((element) => element.status == OrderStatus.delivered).toList();
+            return delivered.isEmpty ? const Center(child: Text('Hech narsa yo\'q')) : Column(
+              children: [
+                Expanded(
+                  child: ListView.separated(
+                    padding: const EdgeInsets.all(16),
+                    itemCount: delivered.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final order = delivered[index];
+
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            border: Border.all(),
+                            color: Colors.amber.withOpacity(0.1)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(order.name,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold, fontFamily: 'Sora')),
+                                    Text('${TTimeHelpers.dateTimeToString(order.timestamp)} da',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 10,
+                                            fontFamily: 'Sora')),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text('ID: #${order.id.toString().split('-')[0]}',
+                                        style: const TextStyle(color: Colors.black)),
+                                    Text('Summa:  ${order.totalPrice} sum',
+                                        style: TextStyle(color: Colors.amber[900])),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            ...List.generate(
+                              order.items.length,
+                              (index) => Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(order.items[index].food.name,
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold, fontFamily: 'Sora')),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text('Soni: ${order.items[index].quantity} ta',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500, fontFamily: 'Sora')),
+                                      Text('Narxi:  ${order.items[index].totalPrice} sum',
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.w500, fontFamily: 'Sora')),
+                                    ],
+                                  ),
+                                  Divider(
+                                    color: Colors.black.withOpacity(0.3),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            RichText(
+                              text: TextSpan(
+                                children: [
+                                  const TextSpan(
+                                    text: 'Manzil: ',
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Sora'),
+                                  ),
+                                  TextSpan(
+                                    text: order.address,
+                                    style: const TextStyle(
+                                        color: Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'Sora'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Divider(
+                              color: Colors.black,
+                              thickness: 1,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                ZoomTapAnimation(
+                                  onTap: () {
+                                    final phoneNumber = order.phone;
+                                    launchPhoneCall(phoneNumber);
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.all(10.0),
+                                    margin: const EdgeInsets.all(5.0),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                        border: Border.all()),
+                                    child: const Icon(
+                                      Icons.call,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ),
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Yetkazildi',
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Sora'),
+                                        ),
+                                        Icon(
+                                          CupertinoIcons.checkmark_seal_fill,
+                                          color: Colors.green,
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return const Gap(16);
+                    },
+                  ),
+                ),
+                const Gap(kBottomNavigationBarHeight * 1.5)
+              ],
+            );
+          }
+
+          return Center(
+            child: Text(
+              'Current state is $state',
+              textAlign: TextAlign.center,
+            ),
+          );
+        },
       ),
     );
   }
 }
-

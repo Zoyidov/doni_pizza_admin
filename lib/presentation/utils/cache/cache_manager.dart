@@ -10,7 +10,7 @@ class CacheManager {
   }
 
   /// Add data to the cache with a specific [key].
-  void add(String key, dynamic data) {
+  void add(String key, data) {
     _cache[key] = data;
   }
 
