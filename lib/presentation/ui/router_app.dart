@@ -1,3 +1,4 @@
+import 'package:doni_pizza_admin/business_logic/order_bloc/order_remote_bloc.dart';
 import 'package:doni_pizza_admin/presentation/ui/auth/auth_screen.dart';
 import 'package:doni_pizza_admin/presentation/ui/tab_box/tab_box.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,9 @@ class RouterApp extends StatelessWidget {
         }
       },
       listener: (BuildContext context, AuthState state) {
+        if (state == AuthState.unauthenticated) {
+          context.read<OrderRemoteBloc>().init();
+        }
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(

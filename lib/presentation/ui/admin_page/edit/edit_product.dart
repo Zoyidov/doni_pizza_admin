@@ -151,7 +151,11 @@ class EditProductState extends State<EditProduct> {
                   context.read<FoodBlocRemote>().add(
                       UpdateFoodItem(
                         widget.foodItem.id!,
-                        widget.foodItem,
+                        widget.foodItem.copyWith(
+                          name: _nameController.text,
+                          description: _descriptionController.text,
+                          price: double.parse(_priceController.text),
+                        ),
                         (selectedImagePath != null) ? File(
                             selectedImagePath!) : null,
 

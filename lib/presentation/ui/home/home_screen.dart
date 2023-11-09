@@ -130,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
                                 decoration: BoxDecoration(
+                                  border: Border.all(),
                                     borderRadius: BorderRadius.circular(10.0),
                                     color: Colors.amber.withOpacity(0.1)),
                                 child: Column(
@@ -323,6 +324,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         const Gap(kBottomNavigationBarHeight * 1.5)
                       ],
                     );
+            } else if (state is OrderRemoteInitial) {
+              return const Center(child: CircularProgressIndicator(color: Colors.black));
             }
             return Center(
               child: Text(
