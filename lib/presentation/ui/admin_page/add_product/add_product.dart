@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:doni_pizza_admin/business_logic/cubit/category_cubit/category_cubit.dart';
 import 'package:doni_pizza_admin/business_logic/food_bloc/food_bloc.dart';
+import 'package:doni_pizza_admin/business_logic/model/category_model.dart';
 import 'package:doni_pizza_admin/business_logic/model/food_model.dart';
 import 'package:doni_pizza_admin/presentation/ui/widgets/global_textfield.dart';
 import 'package:doni_pizza_admin/presentation/utils/helpers/uid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gap/gap.dart';
 import 'package:zoom_tap_animation/zoom_tap_animation.dart';
 
 import 'package:doni_pizza_admin/presentation/ui/widgets/dialog_gallery_camera.dart';
@@ -35,6 +37,7 @@ class AddProductState extends State<AddProduct> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   String? selectedImagePath;
+  CategoryModel? category;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +53,22 @@ class AddProductState extends State<AddProduct> {
               fontFamily: 'Sora', fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      body: BlocListener<FoodBlocRemote, FoodStateRemote>(
+        listener: (context, state) {
+          if(state is FetchFoodSuccess){
+            Navigator.pop(context);
+            Navigator.pop(context);
+          }
+          else if (state is FetchFoodLoading){
+            showDialog(context: context,barrierDismissible:  false, builder: (context) => const Center(
+              child: CircularProgressIndicator(
+                color: Colors.black,
+              )
+            ));
+          }
+        },
         child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
           physics: const BouncingScrollPhysics(),
           child: Form(
             key: _formKey,
@@ -144,9 +160,42 @@ class AddProductState extends State<AddProduct> {
                     return null;
                   },
                 ),
-                const SizedBox(
-                  height: 50,
+                // const SizedBox(
+                //   height: 50,
+                // ),
+                const Gap(10),
+                DropdownButtonFormField(
+                  decoration: InputDecoration(
+                      hintStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black,
+                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                          borderSide: const BorderSide(width: 2))),
+                  hint: const Text('Kategoriyani tanlang'),
+                  // value: context.read<CategoryCubit>().state[0],
+                  validator: (value) {
+                    if (value == null) {
+                      return 'Kategoriyani tanlang';
+                    }
+                    return null;
+                  },
+                  items: context
+                      .read<CategoryCubit>()
+                      .state
+                      .map(
+                        (e) => DropdownMenuItem(value: e, child: Text(e.name)),
+                      )
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {});
+                    category = value;
+                  },
                 ),
+                const Gap(10),
                 OutlinedButton(
                   style: OutlinedButton.styleFrom(
                       shape: const StadiumBorder(),
@@ -161,7 +210,7 @@ class AddProductState extends State<AddProduct> {
                         price: int.parse(_priceController.text).toDouble(),
                         imageUrl: '',
                         id: UidGenerator.generateUID(),
-                        category: context.read<CategoryCubit>().state[0],
+                        category: category!,
                       );
                       context
                           .read<FoodBlocRemote>()

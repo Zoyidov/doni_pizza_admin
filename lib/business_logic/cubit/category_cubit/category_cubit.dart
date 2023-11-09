@@ -24,9 +24,12 @@ class CategoryCubit extends Cubit<List<CategoryModel>> {
     }
   }
 
-  Future<void> addCategory(CategoryModel category) async {
+  Future<void> addCategory({required CategoryModel category, required File image}) async {
     try {
-      await categoryRepository.addCategory(category);
+
+      final url = await TFirebaseHelper.uploadImage(
+          image, 'images/categories/${image.uri.pathSegments.last}');
+      await categoryRepository.addCategory(category.copyWith(imageUrl: url));
       fetchCategories();
     } catch (e) {
       if (kDebugMode) {
@@ -35,13 +38,13 @@ class CategoryCubit extends Cubit<List<CategoryModel>> {
     }
   }
 
-  Future<void> updateCategory(CategoryModel category,File? image) async {
+  Future<void> updateCategory(CategoryModel category, File? image) async {
     try {
       if (image != null) {
-        final url = await TFirebaseHelper.uploadImage(image, 'images/categories/${image.uri.pathSegments.last}');
+        final url = await TFirebaseHelper.uploadImage(
+            image, 'images/categories/${image.uri.pathSegments.last}');
         await categoryRepository.updateCategory(category.copyWith(imageUrl: url));
-      }
-      else {
+      } else {
         await categoryRepository.updateCategory(category);
       }
       fetchCategories();

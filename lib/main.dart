@@ -22,7 +22,6 @@ import 'package:doni_pizza_admin/business_logic/promotion_bloc/promotion_bloc.da
 import 'package:doni_pizza_admin/business_logic/repositories/food_repo.dart';
 import 'package:doni_pizza_admin/business_logic/repositories/promotion_repo.dart';
 
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -35,16 +34,14 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
-   MyApp({super.key});
+  MyApp({super.key});
 
   final AuthRepository authRepository = AuthRepository();
-   final FoodItemRepository foodItemRepository = FoodItemRepository();
-   final CategoryRepository categoryRepository = CategoryRepository();
-   final PromotionRepository promotionRepository = PromotionRepository();
+  final FoodItemRepository foodItemRepository = FoodItemRepository();
+  final CategoryRepository categoryRepository = CategoryRepository();
+  final PromotionRepository promotionRepository = PromotionRepository();
 
-
-
-   @override
+  @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
@@ -63,17 +60,28 @@ class MyApp extends StatelessWidget {
         BlocProvider<FoodCubit>(create: (context) => FoodCubit(foodItemRepository)),
         BlocProvider<CategoryCubit>(create: (context) => CategoryCubit(categoryRepository)),
         BlocProvider<FoodBlocRemote>(create: (context) => FoodBlocRemote(foodItemRepository)),
-
-    ],
+      ],
       child: MaterialApp(
-        theme: ThemeData(appBarTheme: const AppBarTheme(
-          iconTheme: IconThemeData(
-            color: Colors.black
-          )
-        )),
-        debugShowCheckedModeBanner: false,
-        home:  const RouterApp(),
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(iconTheme: IconThemeData(color: Colors.black)),
+          dropdownMenuTheme: DropdownMenuThemeData(
+menuStyle: const MenuStyle(
 
+),
+            inputDecorationTheme: InputDecorationTheme(
+              hintStyle:  const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.black,
+              ),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0)),
+                focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16.0),
+                    borderSide: const BorderSide(width: 2))),
+          ),
+        ),
+        debugShowCheckedModeBanner: false,
+        home: const RouterApp(),
       ),
     );
   }

@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
-
 class GlobalTextField extends StatefulWidget {
   final String hintText;
   final TextInputType keyboardType;
@@ -128,8 +127,7 @@ class _GlobalTextFieldState extends State<GlobalTextField> {
           textInputAction: widget.textInputAction,
           inputFormatters:
               widget.keyboardType == TextInputType.phone ? [_phoneMaskFormatter] : null,
-          obscureText:
-              widget.keyboardType == TextInputType.visiblePassword ? !_isPasswordVisible : false,
+          obscureText: widget.keyboardType == TextInputType.visiblePassword,
           validator: (value) {
             if (widget.keyboardType == TextInputType.phone) {
               if (value != null && value.length < 19) {

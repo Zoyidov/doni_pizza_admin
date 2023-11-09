@@ -39,7 +39,7 @@ class _CategoriesState extends State<Categories> {
                   width: 80,
                   child: CachedNetworkImage(
                     imageUrl: category.imageUrl,
-                    fit: BoxFit.fill,
+                    // fit: BoxFit.fill,
                   ),
                 ),
                 trailing: Row(
@@ -60,7 +60,7 @@ class _CategoriesState extends State<Categories> {
                           buttonYes: 'Ha',
                           buttonNo: 'Yo\'q',
                           onYesPressed: () {
-                              context.read<CategoryCubit>().deleteCategory(category.id!) ;
+                              context.read<CategoryCubit>().deleteCategory(category.id) ;
                               Navigator.pop(context);
                           },
                           onNoPressed: () {

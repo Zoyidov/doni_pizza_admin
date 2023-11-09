@@ -20,7 +20,6 @@ class TabBox extends StatefulWidget {
 }
 
 class _TabBoxState extends State<TabBox> {
-
   List<Widget> pages = [
     const HomeScreen(),
     const PreparingScreen(),
@@ -31,56 +30,75 @@ class _TabBoxState extends State<TabBox> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBody: true,
-      body: BlocBuilder<TabCubit, int>(
-        builder: (context, state) {
-          return IndexedStack(
-            index: context
-                .watch<TabCubit>()
-                .state,
-            children: pages,
-          );
-        },
-      ),
-      bottomNavigationBar: StylishBottomBar(
-        option: BubbleBarOptions(
-          opacity: 0.5,
+        extendBody: true,
+        body: IndexedStack(
+          index: context
+              .watch<TabCubit>()
+              .state,
+          children: pages,
         ),
-        items: [
-          BottomBarItem(
-            icon: const Icon(CupertinoIcons.doc_on_doc),
-            title: const Text('Buyurtmalar',style: TextStyle(color: Colors.white),),
-            backgroundColor: Colors.black,
-            selectedIcon: const Icon(CupertinoIcons.doc_on_doc_fill,color: Colors.white,),
+        // body: PageView(
+        //   pageSnapping: ,
+        //   children: pages,
+        //   onPageChanged: context.read<TabCubit>().changeTab,
+        // ),
+        bottomNavigationBar: StylishBottomBar(
+          option: BubbleBarOptions(
+            opacity: 0.5,
           ),
-          BottomBarItem(
-            icon: const Icon(Icons.watch_later_outlined),
-            title: const Text('Tayyorlanmoqda',style: TextStyle(color: Colors.white),),
-            backgroundColor: Colors.blue[900],
-            selectedIcon: const Icon(Icons.watch_later,color: Colors.white,),
-
-          ),
-          BottomBarItem(
-            icon: const Icon(Icons.directions_run),
-            title: const Text('Yetkazilmoqda',style: TextStyle(color: Colors.white),),
-            backgroundColor: Colors.amber[900],
-            selectedIcon: const Icon(Icons.directions_bike,color: Colors.white,),
-          ),
-          BottomBarItem(
-            icon: const Icon(Icons.dining_outlined),
-            title: const Text('Yetkazildi',style: TextStyle(color: Colors.white),),
-            backgroundColor: Colors.green[900],
-            selectedIcon: const Icon(Icons.dining,color: Colors.white,),
-          ),
-        ],
-        hasNotch: true,
-        currentIndex: context
-            .watch<TabCubit>()
-            .state,
-        onTap: context
-            .read<TabCubit>()
-            .changeTab,
-      )
-    );
+          items: [
+            BottomBarItem(
+              icon: const Icon(CupertinoIcons.doc_on_doc),
+              title: const Text(
+                'Buyurtmalar',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.black,
+              selectedIcon: const Icon(
+                CupertinoIcons.doc_on_doc_fill,
+                color: Colors.white,
+              ),
+            ),
+            BottomBarItem(
+              icon: const Icon(Icons.watch_later_outlined),
+              title: const Text(
+                'Tayyorlanmoqda',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.blue[900],
+              selectedIcon: const Icon(
+                Icons.watch_later,
+                color: Colors.white,
+              ),
+            ),
+            BottomBarItem(
+              icon: const Icon(Icons.directions_run),
+              title: const Text(
+                'Yetkazilmoqda',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.amber[900],
+              selectedIcon: const Icon(
+                Icons.directions_bike,
+                color: Colors.white,
+              ),
+            ),
+            BottomBarItem(
+              icon: const Icon(Icons.dining_outlined),
+              title: const Text(
+                'Yetkazildi',
+                style: TextStyle(color: Colors.white),
+              ),
+              backgroundColor: Colors.green[900],
+              selectedIcon: const Icon(
+                Icons.dining,
+                color: Colors.white,
+              ),
+            ),
+          ],
+          hasNotch: true,
+          currentIndex: context.watch<TabCubit>().state,
+          onTap: context.read<TabCubit>().changeTab,
+        ));
   }
 }

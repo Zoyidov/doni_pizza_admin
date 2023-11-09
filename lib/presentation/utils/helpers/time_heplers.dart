@@ -1,7 +1,6 @@
 class TTimeHelpers {
   static DateTime timestampToDateTime(int unixTimestamp) {
-    final millisecondsSinceEpoch = unixTimestamp * 1000;
-    return DateTime.fromMillisecondsSinceEpoch(millisecondsSinceEpoch, isUtc: true);
+    return DateTime.fromMillisecondsSinceEpoch(unixTimestamp * 1000);
   }
 
   static int dateTimeToTimestamp(DateTime timestamp) {
@@ -29,6 +28,4 @@ class TTimeHelpers {
   static bool isSameDay(DateTime date1, DateTime date2) {
     return date1.day == date2.day && date1.month == date2.month && date1.year == date2.year;
   }
-
-
 }

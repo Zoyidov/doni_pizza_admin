@@ -83,6 +83,8 @@ class _DeliveringScreenState extends State<DeliveringScreen> {
                                               style: const TextStyle(color: Colors.black)),
                                           Text('Summa:  ${order.totalPrice} sum',
                                               style: TextStyle(color: Colors.amber[900])),
+                                          Text('${order.paymentMethod}',
+                                              style: TextStyle(color: Colors.blue[900])),
                                         ],
                                       ),
                                     ],
@@ -161,9 +163,14 @@ class _DeliveringScreenState extends State<DeliveringScreen> {
                                               borderRadius: BorderRadius.circular(10),
                                               color: Colors.white,
                                               border: Border.all()),
-                                          child: const Icon(
-                                            Icons.call,
-                                            color: Colors.green,
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.call,
+                                                color: Colors.green,
+                                              ),
+                                              Text(order.phone),
+                                            ],
                                           ),
                                         ),
                                       ),

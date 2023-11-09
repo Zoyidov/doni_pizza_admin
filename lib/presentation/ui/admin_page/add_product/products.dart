@@ -52,7 +52,7 @@ class _ProductScreenState extends State<ProductScreen> {
                   height: 80,
                   child: CachedNetworkImage(
                      imageUrl: item.imageUrl,
-                    fit: BoxFit.fill,
+                    fit: BoxFit.scaleDown,
                   ),
                 ),
                 trailing: Row(

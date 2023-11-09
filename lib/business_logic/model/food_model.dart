@@ -10,6 +10,11 @@ class FoodItem {
 
   double price;
 
+  @override
+  String toString() {
+    return 'FoodItem{id: $id, name: $name, description: $description, price: $price, imageUrl: $imageUrl, category: $category}';
+  }
+
   String imageUrl;
 
   CategoryModel category;

@@ -1,18 +1,22 @@
 
-import 'package:doni_pizza_admin/presentation/utils/uid.dart';
 
 class CategoryModel {
-  final String? id;
+  final String id;
 
   final String name;
 
   final String imageUrl;
 
   CategoryModel({
-    this.id,
+    required this.id,
     required this.name,
     required this.imageUrl,
   });
+
+  @override
+  String toString() {
+    return 'CategoryModel{id: $id, name: $name, imageUrl: $imageUrl}';
+  }
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) {
     return CategoryModel(
@@ -24,7 +28,7 @@ class CategoryModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id ?? UidGenerator.generateUID(),
+      'id': id,
       'name': name,
       'imageUrl': imageUrl,
     };

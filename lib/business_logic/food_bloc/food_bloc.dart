@@ -88,6 +88,7 @@ class FoodBlocRemote extends Bloc<FoodEvent, FoodStateRemote> {
 
   _createFoodItem(CreateFoodItem event, Emitter<FoodStateRemote> emit) async {
     // Handle creating a food item remotely
+    emit(FetchFoodLoading());
     try {
       final url = await TFirebaseHelper.uploadImage(
           event.image, 'images/food/${event.image.uri.pathSegments.last}'); // Upload image
@@ -102,6 +103,7 @@ class FoodBlocRemote extends Bloc<FoodEvent, FoodStateRemote> {
 
   _updateFoodItem(UpdateFoodItem event, Emitter<FoodStateRemote> emit) async {
     // Handle updating a food item remotely
+    emit(FetchFoodLoading());
     try {
       if (event.image != null) {
         final url = await TFirebaseHelper.uploadImage(

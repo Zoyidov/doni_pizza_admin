@@ -79,6 +79,8 @@ class _PreparingScreenState extends State<PreparingScreen> {
                                     Text('ID: #${order.id.toString().split('-')[0]}', style: const TextStyle(color: Colors.black)),
                                     Text('Summa:  ${order.totalPrice} sum',
                                         style: TextStyle(color: Colors.amber[900])),
+                                    Text('${order.paymentMethod}',
+                                        style: TextStyle(color: Colors.blue[900])),
                                   ],
                                 ),
                               ],
@@ -150,9 +152,14 @@ class _PreparingScreenState extends State<PreparingScreen> {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white,
                                         border: Border.all()),
-                                    child: const Icon(
-                                      Icons.call,
-                                      color: Colors.green,
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.call,
+                                          color: Colors.green,
+                                        ),
+                                        Text(order.phone),
+                                      ],
                                     ),
                                   ),
                                 ),

@@ -6,7 +6,6 @@ import 'package:doni_pizza_admin/presentation/utils/enums.dart';
 import 'package:doni_pizza_admin/presentation/utils/helpers/time_heplers.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gap/gap.dart';
-
 import 'package:doni_pizza_admin/presentation/ui/widgets/call.dart';
 
 class DeliveredScreen extends StatefulWidget {
@@ -19,195 +18,259 @@ class DeliveredScreen extends StatefulWidget {
 class _DeliveredScreenState extends State<DeliveredScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
         backgroundColor: Colors.white,
-        title: const Text(
-          'Yetkazildi',
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Sora',
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.white,
+          title: const Text(
+            'Buyurtmalar',
+            style: TextStyle(
+              color: Colors.black,
+              fontFamily: 'Sora',
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          bottom: const TabBar(
+            indicatorColor: Colors.black,
+            labelColor: Colors.black,
+            unselectedLabelColor: Colors.grey,
+            labelStyle: TextStyle(fontSize: 20, fontFamily: 'Sora', fontWeight: FontWeight.bold),
+            tabs: [
+              Tab(
+                text: 'Yetkazilgan',
+              ),
+              Tab(text: 'Bekor qilingan'),
+            ],
           ),
         ),
+        body: TabBarView(
+          children: [
+            _buildOrderList(OrderStatus.delivered),
+            _buildOrderList(OrderStatus.canceled),
+          ],
+        ),
       ),
-      body: BlocBuilder<OrderRemoteBloc, OrderRemoteState>(
-        builder: (context, state) {
-          if (state is OrdersFetchedState) {
-            final delivered =
-                state.orders.where((element) => element.status == OrderStatus.delivered).toList();
-            return delivered.isEmpty ? const Center(child: Text('Hech narsa yo\'q')) : Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    padding: const EdgeInsets.all(16),
-                    itemCount: delivered.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      final order = delivered[index];
+    );
+  }
 
-                      return Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.0),
-                            border: Border.all(),
-                            color: Colors.amber.withOpacity(0.1)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+  Widget _buildOrderList(OrderStatus status) {
+    return BlocBuilder<OrderRemoteBloc, OrderRemoteState>(
+      builder: (context, state) {
+        if (state is OrdersFetchedState) {
+          final filteredOrders = state.orders.where((element) => element.status == status).toList();
+
+          return filteredOrders.isEmpty
+              ? const Center(
+                  child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(CupertinoIcons.exclamationmark_circle, color: Colors.red,size: 40,),
+                    Gap(10),
+                    Text(
+                      'Yetkazilgan buyurtmalar mavjud emas',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontFamily: 'Sora', fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ))
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.separated(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: filteredOrders.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          final order = filteredOrders[index];
+
+                          return Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 5.0),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(),
+                                color: Colors.amber.withOpacity(0.1)),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text(order.name,
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.bold, fontFamily: 'Sora')),
-                                    Text('${TTimeHelpers.dateTimeToString(order.timestamp)} da',
-                                        style: const TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 10,
-                                            fontFamily: 'Sora')),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(order.name,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                                fontWeight: FontWeight.bold, fontFamily: 'Sora',
+                                            ),),
+                                        Text('${TTimeHelpers.dateTimeToString(order.timestamp)} da',
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w300,
+                                                fontSize: 10,
+                                                fontFamily: 'Sora')),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text('ID: #${order.id.toString().split('-')[0]}',
+                                            style: const TextStyle(color: Colors.black)),
+                                        Text('Summa:  ${order.totalPrice}',
+                                            style: TextStyle(color: Colors.amber[900])),
+                                        Text('${order.paymentMethod}',
+                                            style: TextStyle(color: Colors.blue[900])),
+                                      ],
+                                    ),
                                   ],
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text('ID: #${order.id.toString().split('-')[0]}',
-                                        style: const TextStyle(color: Colors.black)),
-                                    Text('Summa:  ${order.totalPrice} sum',
-                                        style: TextStyle(color: Colors.amber[900])),
-                                  ],
+                                const Divider(
+                                  color: Colors.black,
+                                  thickness: 1,
                                 ),
-                              ],
-                            ),
-                            const Divider(
-                              color: Colors.black,
-                              thickness: 1,
-                            ),
-                            ...List.generate(
-                              order.items.length,
-                              (index) => Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(order.items[index].food.name,
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold, fontFamily: 'Sora')),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                ...List.generate(
+                                  order.items.length,
+                                  (index) => Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Soni: ${order.items[index].quantity} ta',
+                                      Text(order.items[index].food.name,
                                           style: const TextStyle(
-                                              fontWeight: FontWeight.w500, fontFamily: 'Sora')),
-                                      Text('Narxi:  ${order.items[index].totalPrice} sum',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w500, fontFamily: 'Sora')),
+                                              fontWeight: FontWeight.bold, fontFamily: 'Sora')),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text('Soni: ${order.items[index].quantity} ta',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500, fontFamily: 'Sora')),
+                                          Text('Narxi:  ${order.items[index].totalPrice} sum',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w500, fontFamily: 'Sora')),
+                                        ],
+                                      ),
+                                      Divider(
+                                        color: Colors.black.withOpacity(0.3),
+                                      ),
                                     ],
                                   ),
-                                  Divider(
-                                    color: Colors.black.withOpacity(0.3),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              color: Colors.black,
-                              thickness: 1,
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  const TextSpan(
-                                    text: 'Manzil: ',
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Sora'),
-                                  ),
-                                  TextSpan(
-                                    text: order.address,
-                                    style: const TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold,
-                                        fontFamily: 'Sora'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Divider(
-                              color: Colors.black,
-                              thickness: 1,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                ZoomTapAnimation(
-                                  onTap: () {
-                                    final phoneNumber = order.phone;
-                                    launchPhoneCall(phoneNumber);
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10.0),
-                                    margin: const EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                        border: Border.all()),
-                                    child: const Icon(
-                                      Icons.call,
-                                      color: Colors.green,
-                                    ),
+                                ),
+                                const Divider(
+                                  color: Colors.black,
+                                  thickness: 1,
+                                ),
+                                RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      const TextSpan(
+                                        text: 'Manzil: ',
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Sora'),
+                                      ),
+                                      TextSpan(
+                                        text: order.address,
+                                        style: const TextStyle(
+                                            color: Colors.grey,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: 'Sora'),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                const Divider(
+                                  color: Colors.black,
+                                  thickness: 1,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Row(
-                                      children: [
-                                        Text(
-                                          'Yetkazildi',
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                              fontFamily: 'Sora'),
+                                    ZoomTapAnimation(
+                                      onTap: () {
+                                        final phoneNumber = order.phone;
+                                        launchPhoneCall(phoneNumber);
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10.0),
+                                        margin: const EdgeInsets.all(5.0),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white,
+                                            border: Border.all()),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.call,
+                                              color: Colors.green,
+                                            ),
+                                            Text(order.phone),
+                                          ],
                                         ),
-                                        Icon(
-                                          CupertinoIcons.checkmark_seal_fill,
-                                          color: Colors.green,
-                                        )
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        order.status == OrderStatus.delivered
+                                            ? const Row(
+                                                children: [
+                                                  Text(
+                                                    'Yetkazildi',
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Sora'),
+                                                  ),
+                                                  Icon(
+                                                    CupertinoIcons.checkmark_seal_fill,
+                                                    color: Colors.green,
+                                                  )
+                                                ],
+                                              )
+                                            : const Row(
+                                                children: [
+                                                  Text(
+                                                    'Bekor qilindi',
+                                                    style: TextStyle(
+                                                        color: Colors.red,
+                                                        fontSize: 16,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontFamily: 'Sora'),
+                                                  ),
+                                                  Icon(
+                                                    CupertinoIcons.xmark_seal_fill,
+                                                    color: Colors.red,
+                                                  )
+                                                ],
+                                              ),
                                       ],
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return const Gap(16);
-                    },
-                  ),
-                ),
-                const Gap(kBottomNavigationBarHeight * 1.5)
-              ],
-            );
-          }
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return const Gap(16);
+                        },
+                      ),
+                    ),
+                    const Gap(kBottomNavigationBarHeight * 1.5)
+                  ],
+                );
+        }
 
-          return Center(
-            child: Text(
-              'Current state is $state',
-              textAlign: TextAlign.center,
-            ),
-          );
-        },
-      ),
+        return Center(
+          child: Text(
+            'Current state is $state',
+            textAlign: TextAlign.center,
+          ),
+        );
+      },
     );
   }
 }

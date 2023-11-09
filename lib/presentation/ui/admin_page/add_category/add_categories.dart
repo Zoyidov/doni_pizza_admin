@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:doni_pizza_admin/business_logic/model/category_model.dart';
 import 'package:doni_pizza_admin/presentation/ui/widgets/global_textfield.dart';
+import 'package:doni_pizza_admin/presentation/utils/helpers/uid.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -71,28 +72,26 @@ class AddCategoryState extends State<AddCategory> {
                     padding: const EdgeInsets.all(3.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16.0),
-                      color: selectedImagePath == null
-                          ? Colors.grey.shade400
-                          : Colors.black,
+                      color: selectedImagePath == null ? Colors.grey.shade400 : Colors.black,
                     ),
                     child: selectedImagePath != null
                         ? ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Image.file(
-                        File(selectedImagePath!),
-                        fit: BoxFit.scaleDown,
-                      ),
-                    )
+                            borderRadius: BorderRadius.circular(16.0),
+                            child: Image.file(
+                              File(selectedImagePath!),
+                              fit: BoxFit.scaleDown,
+                            ),
+                          )
                         : const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 80.0),
-                        child: Icon(
-                          CupertinoIcons.camera,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 80.0),
+                              child: Icon(
+                                CupertinoIcons.camera,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 20.0),
@@ -120,13 +119,14 @@ class AddCategoryState extends State<AddCategory> {
                     ),
                   ),
                   onPressed: () {
-                    if (_formKey.currentState!.validate()) {
+                    if (_formKey.currentState!.validate() && selectedImagePath != null) {
                       final newCategory = CategoryModel(
+                        id: UidGenerator.generateUID(),
                         name: categoryController.text,
                         imageUrl: selectedImagePath ?? '',
                       );
-
-                      BlocProvider.of<CategoryCubit>(context).addCategory(newCategory);
+                      // print(selectedImagePath);
+                      BlocProvider.of<CategoryCubit>(context).addCategory(category: newCategory, image: File(selectedImagePath!));
                       Navigator.pop(context);
                     }
                   },
